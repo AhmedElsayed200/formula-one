@@ -17,7 +17,7 @@ const Races: React.FC = () => {
   const [page, setPage] = useState(1);
   const [cardView, setCardView] = useState(true);
   const offset = (page - 1) * PAGE_LIMIT;
-  const url = season ? `${API_URL}/${season}/races.js?limit=${PAGE_LIMIT}&offset=${offset}` : null;
+  const url = season ? `${API_URL}/${season}/races.json?limit=${PAGE_LIMIT}&offset=${offset}` : null;
   const { data, loading, error } = useFetch<any>(url);
   const races: Race[] = data?.MRData?.RaceTable?.Races || [];
   const total: number = data?.MRData?.total ? parseInt(data.MRData.total, 10) : 0;

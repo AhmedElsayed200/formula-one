@@ -109,6 +109,8 @@ const RaceDetails: React.FC = () => {
             <>
               <div style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'center' }}>
                 <FastestLapChart fastestLapData={fastestLapData} />
+              </div>
+              <div style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'center' }}>
                 <PointsChart pointsData={pointsData} />
               </div>
               <div style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'center' }}>

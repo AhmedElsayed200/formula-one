@@ -4,13 +4,11 @@ export interface Season {
   url: string;
 }
 
-
 // races page
 interface Circuit {
   circuitId: string;
   circuitName: string;
 }
-
 export interface Race {
   raceName: string;
   Circuit: Circuit;
@@ -27,24 +25,20 @@ interface Driver {
   dateOfBirth: string;
   url?: string;
 }
-
 interface Time {
   millis: string;
   time: string;
 }
-
 interface AverageSpeed {
   units: string;
   speed: string;
 }
-
 interface FastestLap {
   rank: string;
   lap: string;
   Time: Time;
   AverageSpeed: AverageSpeed;
 }
-
 export interface Players {
   position: string;
   points: string;
@@ -55,7 +49,6 @@ export interface Players {
   Time?: Time;
   FastestLap?: FastestLap;
 }
-
 export interface RaceData {
   raceName: string;
   Results: Players[];
