@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { PAGE_LIMIT, API_URL } from '../../constants';
-import type { Players, RaceData } from '../../types/index.ts';
+import type { Players } from '../../types/index.ts';
 import PlayerImage from '../../assets/images/player.jpg';
 import Pagination from '../../components/Pagination.tsx';
 import CardView from '../../components/CardView';
@@ -12,6 +12,8 @@ import PointsChart from '../../components/Charts/PointsChart';
 import TotalRaceTimeChart from '../../components/Charts/TotalRaceTimeChart';
 import PlayerCard from './PlayerCard';
 import useFetch from '../../hooks/useFetch';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import ErrorMessage from '../../components/ErrorMessage';
 
 const RaceDetails: React.FC = () => {
   const { seasonId, roundId } = useParams<{ seasonId: string; roundId: string }>();
@@ -80,8 +82,8 @@ const RaceDetails: React.FC = () => {
         onButtonClick={() => setShowComparison((v) => !v)}
         buttonProps={{ className: 'cursor-pointer' }}
       />
-      {loading && <div style={{ textAlign: 'center', fontSize: 18 }}>Loading...</div>}
-      {error && <div style={{ color: 'red', textAlign: 'center', fontSize: 18 }}>{error}</div>}
+      {loading && <LoadingSpinner message="Loading..." />}
+      {error && <ErrorMessage message={error} />}
       {!loading && !error && players?.length > 0 && (
         <>
           {!showComparison && (

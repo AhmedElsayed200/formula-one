@@ -9,7 +9,8 @@ import CardView from '../../components/CardView';
 import ListView from '../../components/ListView';
 import Header from '../../components/Header';
 import useFetch from '../../hooks/useFetch';
-
+import LoadingSpinner from '../../components/LoadingSpinner';
+import ErrorMessage from '../../components/ErrorMessage';
 
 const Seasons: React.FC = () => {
   const [page, setPage] = useState<number>(1);
@@ -30,8 +31,8 @@ const Seasons: React.FC = () => {
         onButtonClick={() => setCardView((v) => !v)}
         buttonProps={{ className: 'cursor-pointer' }}
       />
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-600">{error}</p>}
+      {loading && <LoadingSpinner message="Loading..." />}
+      {error && <ErrorMessage message={error} />}
       {!loading && !error && (
         <>
           {cardView ? (
