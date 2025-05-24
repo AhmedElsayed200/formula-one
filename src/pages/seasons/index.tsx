@@ -9,6 +9,12 @@ interface Season {
   url: string;
 }
 
+function formatWikipediaUrl(rawUrl: string): string {
+  let url = rawUrl.replace(/\\/g, '');
+  url = url.replace(/^http:\/\//, 'https://');
+  return url;
+}
+
 const Seasons: React.FC = () => {
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,6 +56,15 @@ const Seasons: React.FC = () => {
             {seasons.map((season) => (
               <li key={season.season}>
                 <Link to={`/season/${season.season}`}>{season.season}</Link>
+                {' | '}
+                <a
+                  href={formatWikipediaUrl(season.url)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ marginLeft: 8 }}
+                >
+                  Wikipedia
+                </a>
               </li>
             ))}
           </ul>
