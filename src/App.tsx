@@ -9,8 +9,8 @@ function App() {
     <>
       <Routes>
         <Route path='/' element={<Seasons />} />
-        <Route path='/season/:id/races' element={<Races />} />
-        <Route path='/season/:id/races/:id' element={<RaceDetails />} />
+        <Route path='/season/:id' element={<Races />} />
+        <Route path='/season/:seasonId/races/:roundId' element={<RaceDetails />} />
       </Routes>
     </>
   )
