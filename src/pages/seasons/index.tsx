@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CarImage from '../../assets/images/car.jpg';
 import { API_URL, PAGE_LIMIT } from '../../constants';
@@ -8,37 +8,17 @@ import Pagination from '../../components/Pagination.tsx';
 import CardView from '../../components/CardView';
 import ListView from '../../components/ListView';
 import Header from '../../components/Header';
+import useFetch from '../../hooks/useFetch';
 
 
 const Seasons: React.FC = () => {
-  const [seasons, setSeasons] = useState<Season[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const [total, setTotal] = useState<number>(0);
   const [cardView, setCardView] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchSeasons = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const offset = (page - 1) * PAGE_LIMIT;
-        const response = await fetch(`${API_URL}/seasons.json?limit=${PAGE_LIMIT}&offset=${offset}`);
-        if (!response.ok) throw new Error('Failed to fetch seasons');
-        const data = await response.json();
-        const seasonsData: Season[] = data?.MRData?.SeasonTable?.Seasons || [];
-        setSeasons(seasonsData);
-        setTotal(Number(data?.MRData?.total) || 0);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSeasons();
-  }, [page]);
-
+  const offset = (page - 1) * PAGE_LIMIT;
+  const url = `${API_URL}/seasons.json?limit=${PAGE_LIMIT}&offset=${offset}`;
+  const { data, loading, error } = useFetch<any>(url);
+  const seasons: Season[] = data?.MRData?.SeasonTable?.Seasons || [];
+  const total: number = Number(data?.MRData?.total) || 0;
   const totalPages = Math.ceil(total / PAGE_LIMIT);
 
   return (

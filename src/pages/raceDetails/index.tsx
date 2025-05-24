@@ -11,16 +11,19 @@ import FastestLapChart from '../../components/Charts/FastestLapChart';
 import PointsChart from '../../components/Charts/PointsChart';
 import TotalRaceTimeChart from '../../components/Charts/TotalRaceTimeChart';
 import PlayerCard from './PlayerCard';
+import useFetch from '../../hooks/useFetch';
 
 const RaceDetails: React.FC = () => {
   const { seasonId, roundId } = useParams<{ seasonId: string; roundId: string }>();
-  const [players, setPlayers] = useState<Players[]>([]);
-  const [raceName, setRaceName] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
   const [showComparison, setShowComparison] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  
+
+  const url = seasonId && roundId ? `${API_URL}/${seasonId}/${roundId}/results.json` : null;
+  const { data, loading, error } = useFetch<any>(url);
+
+  const players: Players[] = data?.MRData?.RaceTable?.Races?.[0]?.Results || [];
+  const raceName: string = data?.MRData?.RaceTable?.Races?.[0]?.raceName || '';
+
   // Chart data logic
   const fastestLapData = players
     .filter(r => r.FastestLap)
@@ -67,34 +70,6 @@ const RaceDetails: React.FC = () => {
     })
     .filter(d => d.seconds && d.seconds > 0)
     .sort((a, b) => (a.seconds ?? Infinity) - (b.seconds ?? Infinity));
-
-  useEffect(() => {
-    if (!roundId) return;
-    setLoading(true);
-    setError('');
-    setPlayers([]);
-    setRaceName('');
-    fetch(`${API_URL}/${seasonId}/${roundId}/results.json`)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch race results');
-        return res.json();
-      })
-      .then((data) => {
-        const race: RaceData = data.MRData.RaceTable.Races[0];
-        if (race) {
-          setRaceName(race.raceName);
-          setPlayers(race.Results);
-        } else {
-          setError('Race not found');
-        }
-      })
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [seasonId, roundId]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [players]);
 
   return (
     <div className="p-6">

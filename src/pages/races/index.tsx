@@ -8,42 +8,17 @@ import Pagination from '../../components/Pagination.tsx';
 import CardView from '../../components/CardView';
 import ListView from '../../components/ListView';
 import Header from '../../components/Header';
+import useFetch from '../../hooks/useFetch';
 
 const Races: React.FC = () => {
   const { id: season } = useParams<{ id: string }>();
-  const [races, setRaces] = useState<Race[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
   const [cardView, setCardView] = useState(true);
-
-  useEffect(() => {
-    setPage(1);
-  }, [season]);
-
-  useEffect(() => {
-    if (!season) return;
-    const fetchRaces = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const offset = (page - 1) * PAGE_LIMIT;
-        const res = await fetch(`${API_URL}/${season}/races.json?limit=${PAGE_LIMIT}&offset=${offset}`);
-        if (!res.ok) throw new Error('Failed to fetch races');
-        const data = await res.json();
-        const newRaces: Race[] = data.MRData.RaceTable.Races;
-        setRaces(newRaces);
-        setTotal(parseInt(data.MRData.total, 10));
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRaces();
-  }, [season, page]);
-
+  const offset = (page - 1) * PAGE_LIMIT;
+  const url = season ? `${API_URL}/${season}/races.json?limit=${PAGE_LIMIT}&offset=${offset}` : null;
+  const { data, loading, error } = useFetch<any>(url);
+  const races: Race[] = data?.MRData?.RaceTable?.Races || [];
+  const total: number = data?.MRData?.total ? parseInt(data.MRData.total, 10) : 0;
   const totalPages = Math.ceil(total / PAGE_LIMIT);
 
   return (
