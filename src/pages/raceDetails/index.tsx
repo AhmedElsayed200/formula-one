@@ -1,71 +1,89 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-interface Driver {
-  driverId: string;
-  givenName: string;
-  familyName: string;
-  nationality: string;
-  dateOfBirth: string;
-  url?: string;
-}
-
-interface Time {
-  millis: string;
-  time: string;
-}
-
-interface AverageSpeed {
-  units: string;
-  speed: string;
-}
-
-interface FastestLap {
-  rank: string;
-  lap: string;
-  Time: Time;
-  AverageSpeed: AverageSpeed;
-}
-
-interface Result {
-  position: string;
-  points: string;
-  grid: string;
-  laps: string;
-  status: string;
-  Driver: Driver;
-  Time?: Time;
-  FastestLap?: FastestLap;
-}
-
-interface Race {
-  raceName: string;
-  Results: Result[];
-}
+import { PAGE_LIMIT, API_URL } from '../../constants';
+import type { Players, RaceData } from '../../types/index.ts';
+import PlayerImage from '../../assets/images/player.jpg';
+import Pagination from '../../components/Pagination.tsx';
+import CardView from '../../components/CardView';
+import Header from '../../components/Header';
+import FastestLapChart from '../../components/Charts/FastestLapChart';
+import PointsChart from '../../components/Charts/PointsChart';
+import TotalRaceTimeChart from '../../components/Charts/TotalRaceTimeChart';
+import PlayerCard from './PlayerCard';
 
 const RaceDetails: React.FC = () => {
   const { seasonId, roundId } = useParams<{ seasonId: string; roundId: string }>();
-  const [results, setResults] = useState<Result[]>([]);
+  const [players, setPlayers] = useState<Players[]>([]);
   const [raceName, setRaceName] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [showComparison, setShowComparison] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  
+  // Chart data logic
+  const fastestLapData = players
+    .filter(r => r.FastestLap)
+    .map(r => {
+      const timeStr = r.FastestLap?.Time.time;
+      let seconds = null;
+      if (timeStr) {
+        const [min, sec] = timeStr.split(':');
+        seconds = parseInt(min, 10) * 60 + parseFloat(sec);
+      }
+      return {
+        name: `${r.Driver.givenName} ${r.Driver.familyName}`,
+        seconds,
+      };
+    })
+    .filter(d => d.seconds && d.seconds > 0)
+    .sort((a, b) => (a.seconds ?? Infinity) - (b.seconds ?? Infinity));
+
+  const pointsData = players
+    .map(r => ({
+      name: `${r.Driver.givenName} ${r.Driver.familyName}`,
+      points: parseFloat(r.points),
+    }))
+    .filter(d => d.points && d.points > 0)
+    .sort((a, b) => (b.points ?? -Infinity) - (a.points ?? -Infinity));
+
+  const totalTimeData = players
+    .filter(r => r.Time && r.Time.time)
+    .map(r => {
+      const timeStr = r.Time?.time;
+      let seconds = null;
+      if (timeStr) {
+        const parts = timeStr.split(':');
+        if (parts.length === 3) {
+          seconds = parseInt(parts[0], 10) * 3600 + parseInt(parts[1], 10) * 60 + parseFloat(parts[2]);
+        } else if (parts.length === 2) {
+          seconds = parseInt(parts[0], 10) * 60 + parseFloat(parts[1]);
+        }
+      }
+      return {
+        name: `${r.Driver.givenName} ${r.Driver.familyName}`,
+        seconds,
+      };
+    })
+    .filter(d => d.seconds && d.seconds > 0)
+    .sort((a, b) => (a.seconds ?? Infinity) - (b.seconds ?? Infinity));
 
   useEffect(() => {
     if (!roundId) return;
     setLoading(true);
     setError('');
-    setResults([]);
+    setPlayers([]);
     setRaceName('');
-    fetch(`http://ergast.com/api/f1/${seasonId}/${roundId}/results.json`)
+    fetch(`${API_URL}/${seasonId}/${roundId}/results.json`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch race results');
         return res.json();
       })
       .then((data) => {
-        const race: Race = data.MRData.RaceTable.Races[0];
+        const race: RaceData = data.MRData.RaceTable.Races[0];
         if (race) {
           setRaceName(race.raceName);
-          setResults(race.Results);
+          setPlayers(race.Results);
         } else {
           setError('Race not found');
         }
@@ -74,49 +92,56 @@ const RaceDetails: React.FC = () => {
       .finally(() => setLoading(false));
   }, [seasonId, roundId]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [players]);
+
   return (
-    <div>
-      <h2>Race Details {raceName && `- ${raceName}`}</h2>
-      {loading && <div>Loading...</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      {!loading && !error && results.length > 0 && (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
-          <thead>
-            <tr>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Position</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Name</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Nationality</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Grid</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Laps</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Status</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Points</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Finish Time</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Fastest Lap</th>
-              <th style={{ border: '1px solid #ccc', padding: 8 }}>Avg Speed</th>
-            </tr>
-          </thead>
-          <tbody>
-            {results.map(result => {
-              const fastestLap = result.FastestLap;
-              return (
-                <tr key={result.Driver.driverId}>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{result.position}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{result.Driver.givenName} {result.Driver.familyName}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{result.Driver.nationality}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{result.grid}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{result.laps}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{result.status}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{result.points}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{result.Time?.time || '-'}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{fastestLap ? fastestLap.Time.time : '-'}</td>
-                  <td style={{ border: '1px solid #ccc', padding: 8 }}>{fastestLap ? `${fastestLap.AverageSpeed.speed} ${fastestLap.AverageSpeed.units}` : '-'}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+    <div className="p-6">
+      <Header
+        title="Formula One Explorer"
+        h2={<>Race Details - {raceName && <span className="text-blue-900"> {raceName}</span>}</>}
+        buttonLabel={showComparison ? 'Players' : 'Comparisons'}
+        onButtonClick={() => setShowComparison((v) => !v)}
+        buttonProps={{ className: 'cursor-pointer' }}
+      />
+      {loading && <div style={{ textAlign: 'center', fontSize: 18 }}>Loading...</div>}
+      {error && <div style={{ color: 'red', textAlign: 'center', fontSize: 18 }}>{error}</div>}
+      {!loading && !error && players?.length > 0 && (
+        <>
+          {!showComparison && (
+            <>
+              <CardView
+                items={players.slice((page - 1) * PAGE_LIMIT, page * PAGE_LIMIT)}
+                getKey={result => result.Driver.driverId}
+                getBackgroundImage={() => PlayerImage}
+                renderItem={result => <PlayerCard result={result} />}
+              />
+              <div className="mt-4 text-center">
+                <Pagination
+                  page={page}
+                  totalPages={Math.ceil(players.length / PAGE_LIMIT)}
+                  onPageChange={setPage}
+                />
+              </div>
+            </>
+          )}
+
+          {/* Charts Section */}
+          {showComparison && (
+            <>
+              <div style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'center' }}>
+                <FastestLapChart fastestLapData={fastestLapData} />
+                <PointsChart pointsData={pointsData} />
+              </div>
+              <div style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'center' }}>
+                <TotalRaceTimeChart totalTimeData={totalTimeData} />
+              </div>
+            </>
+          )}
+        </>
       )}
-      {!loading && !error && results.length === 0 && <div>No results found.</div>}
+      {!loading && !error && players?.length === 0 && <div style={{ textAlign: 'center', fontSize: 18 }}>No results found.</div>}
     </div>
   );
 };
