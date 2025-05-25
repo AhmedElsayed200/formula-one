@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import CarImage from '../../assets/images/car.jpg';
-import { API_URL, PAGE_LIMIT } from '../../constants';
+import { PAGE_LIMIT } from '../../constants';
 import type { Season } from '../../types/index.ts';
 import { formatWikipediaUrl } from '../../utils/helpers';
 import { Pagination, CardView, ListView, Header, LoadingSpinner, ErrorMessage } from '../../components';
@@ -11,7 +11,7 @@ const Seasons: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [cardView, setCardView] = useState<boolean>(true);
   const offset = (page - 1) * PAGE_LIMIT;
-  const url = `${API_URL}/seasons.json?limit=${PAGE_LIMIT}&offset=${offset}`;
+  const url = `${import.meta.env.VITE_API_URL}/seasons.json?limit=${PAGE_LIMIT}&offset=${offset}`;
   const { data, loading, error } = useFetch<any>(url);
   const seasons: Season[] = data?.MRData?.SeasonTable?.Seasons || [];
   const total: number = Number(data?.MRData?.total) || 0;

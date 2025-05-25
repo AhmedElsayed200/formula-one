@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { PAGE_LIMIT, API_URL } from '../../constants';
+import { PAGE_LIMIT } from '../../constants';
 import type { Players } from '../../types/index.ts';
 import PlayerImage from '../../assets/images/player.jpg';
 import { Pagination, CardView, Header, FastestLapChart, PointsChart, TotalRaceTimeChart, LoadingSpinner, ErrorMessage } from '../../components';
@@ -13,7 +13,7 @@ const RaceDetails: React.FC = () => {
   const [showComparison, setShowComparison] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
 
-  const url = seasonId && roundId ? `${API_URL}/${seasonId}/${roundId}/results.json` : null;
+  const url = seasonId && roundId ? `${import.meta.env.VITE_API_URL}/${seasonId}/${roundId}/results.json` : null;
   const { data, loading, error } = useFetch<any>(url);
 
   const players: Players[] = data?.MRData?.RaceTable?.Races?.[0]?.Results || [];
