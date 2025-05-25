@@ -4,17 +4,17 @@ interface HeartButtonProps {
   active: boolean;
   onClick: () => void;
   className?: string;
+  absolutePosition?: boolean;
 }
 
-const HeartButton: React.FC<HeartButtonProps> = ({ active, onClick, className = '' }) => (
+const HeartButton: React.FC<HeartButtonProps> = ({ active, onClick, className = '', absolutePosition = false }) => (
   <button
     type="button"
-    aria-label={active ? 'Remove from favourites' : 'Add to favourites'}
     onClick={e => {
       e.stopPropagation();
       onClick();
     }}
-    className={`cursor-pointer absolute bottom-2 right-2 z-10 p-1 rounded-full bg-white/80 hover:bg-white shadow transition ${className}`}
+    className={`cursor-pointer ${absolutePosition ? 'absolute bottom-2 right-2 z-10' : ''} p-1 rounded-full bg-white/80 hover:bg-white shadow transition ${className}`}
   >
     {active ? (
       <svg xmlns="http://www.w3.org/2000/svg" fill="#ef4444" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#ef4444" className="w-6 h-6">

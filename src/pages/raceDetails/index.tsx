@@ -67,7 +67,7 @@ const RaceDetails: React.FC = () => {
     .sort((a, b) => (a.seconds ?? Infinity) - (b.seconds ?? Infinity));
 
   return (
-    <div className="p-6">
+    <div className="p-6 md:ml-30 md:mr-30">
       <Header
         title="Formula One Explorer"
         h2={<>Race Details - {raceName && <span className="text-blue-900"> {raceName}</span>}</>}

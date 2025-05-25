@@ -14,7 +14,7 @@ function ListView<T>({
   renderItem,
   getKey,
   getBackgroundImage,
-  containerClassName = 'h-40',
+  containerClassName = '',
   className = '',
 }: ListViewProps<T>) {
   return (
@@ -22,10 +22,20 @@ function ListView<T>({
       {items.map(item => (
         <li
           key={getKey(item)}
-          className={`relative bg-cover bg-center rounded-xl shadow-md flex items-end overflow-hidden hover:shadow-lg transition-shadow ${containerClassName}`}
-          style={{ backgroundImage: `url('${getBackgroundImage(item)}')` }}
+          className={`flex flex-col sm:flex-row items-center bg-white/90 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow ${containerClassName}`}
+          style={{ minHeight: 80 }}
         >
-          {renderItem(item)}
+          <div className="flex-shrink-0 w-full h-32 sm:w-32 sm:h-24 overflow-hidden rounded-t-lg sm:rounded-l-lg sm:rounded-t-none">
+            <img
+              src={getBackgroundImage(item)}
+              alt="Season thumbnail"
+              className="object-cover w-full h-full"
+              style={{ display: 'block' }}
+            />
+          </div>
+          <div className="flex-1 w-full px-4 flex flex-col items-center sm:items-start">
+            {renderItem(item)}
+          </div>
         </li>
       ))}
     </ul>

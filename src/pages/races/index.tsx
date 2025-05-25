@@ -28,15 +28,9 @@ const Races: React.FC = () => {
     return aFav ? -1 : 1;
   });
 
-  const renderHeart = (race: Race) => (
-    <HeartButton
-      active={isFavourite(Number(race.round))}
-      onClick={() => toggleFavourite(Number(race.round))}
-    />
-  );
 
   return (
-    <div className="p-6">
+    <div className="p-6 md:ml-30 md:mr-30">
       <Header
         title="Formula One Explorer"
         h2={<>Races for - <span className="text-blue-900">Season {season}</span></>}
@@ -62,7 +56,11 @@ const Races: React.FC = () => {
                   <Link to={`/season/${season}/races/${race.round}`} className="text-white font-medium hover:underline hover:text-blue-200">
                     Details
                   </Link>
-                  {renderHeart(race)}
+                  <HeartButton
+                    active={isFavourite(Number(race.round))}
+                    onClick={() => toggleFavourite(Number(race.round))}
+                    absolutePosition={true}
+                  />
                 </div>
               )}
             />
@@ -72,12 +70,23 @@ const Races: React.FC = () => {
               getKey={race => race.raceName + race.date}
               getBackgroundImage={() => CarImage}
               renderItem={race => (
-                <div className="w-full bg-black/60 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between relative">
-                  <span className="text-xl font-semibold text-white mb-2 sm:mb-0">{race.raceName} - {race.Circuit.circuitName} - {formatDate(race.date)}</span>
-                  <Link to={`/season/${season}/races/${race.round}`} className="mr-8 text-white font-medium hover:underline hover:text-blue-200">
-                    Details
-                  </Link>
-                  {renderHeart(race)}
+                <div className="w-full flex flex-col items-center relative">
+                  <span className="text-xl font-bold text-gray-900 text-center w-full sm:text-left">
+                    {race.raceName} - {race.Circuit.circuitName}
+                  </span>
+                  <span className="text-gray-700 text-center w-full sm:text-left mb-2 sm:mb-0">
+                    {formatDate(race.date)}
+                  </span>
+                  <div className="flex gap-4 mt-2 sm:mt-0 justify-center sm:justify-start w-full items-center">
+                    <Link to={`/season/${season}/races/${race.round}`} className="text-blue-700 font-medium hover:underline hover:text-blue-900 transition-colors">
+                      Details
+                    </Link>
+                    <HeartButton
+                      active={isFavourite(Number(race.round))}
+                      onClick={() => toggleFavourite(Number(race.round))}
+                      absolutePosition={true}
+                    />
+                  </div>
                 </div>
               )}
             />
