@@ -8,7 +8,7 @@ interface FastestLapChartProps {
 }
 
 const FastestLapChart: React.FC<FastestLapChartProps> = ({ fastestLapData }) => {
-  const isVerySmallScreen = useBreakpoint(350);
+  const isVerySmallScreen = useBreakpoint(450);
   if (!fastestLapData.length) return null;
   const height = Math.max(240, Math.min(600, fastestLapData.length * 48));
   return (

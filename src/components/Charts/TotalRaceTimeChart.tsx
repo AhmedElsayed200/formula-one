@@ -8,7 +8,7 @@ interface TotalRaceTimeChartProps {
 }
 
 const TotalRaceTimeChart: React.FC<TotalRaceTimeChartProps> = ({ totalTimeData }) => {
-  const isVerySmallScreen = useBreakpoint(350);
+  const isVerySmallScreen = useBreakpoint(450);
   if (!totalTimeData.length) return null;
   const height = Math.max(240, Math.min(600, totalTimeData.length * 48));
   return (

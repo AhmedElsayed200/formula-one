@@ -8,7 +8,7 @@ interface PointsChartProps {
 }
 
 const PointsChart: React.FC<PointsChartProps> = ({ pointsData }) => {
-  const isVerySmallScreen = useBreakpoint(350);
+  const isVerySmallScreen = useBreakpoint(450);
   if (!pointsData.length) return null;
   const height = Math.max(240, Math.min(600, pointsData.length * 48));
   return (
