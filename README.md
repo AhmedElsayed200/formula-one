@@ -112,5 +112,5 @@ npm run test
 
 ## Check the deployed version : )
 
-- The website is deployed so you can easily access it through this link: `https://formula-one-explorer.netlify.app/`.
+- The website is deployed so you can easily access it through this link: [Formula One Explorer](https://formula-one-explorer.netlify.app/).
 
