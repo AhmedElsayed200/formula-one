@@ -11,7 +11,7 @@ A modern, responsive web application for exploring Formula One seasons, races, a
 - [Tech Stack & Libraries](#tech-stack--libraries)
 - [Getting Started](#getting-started)
 - [Running Tests](#running-tests)
-- [Project Structure](#project-structure)
+- [Deployment](#deployment)
 
 
 ## About
@@ -110,7 +110,7 @@ npm run test
 - The test environment is set up with JSDOM and jest-dom matchers for assertions.
 
 
-## Check the deployed version : )
+## Deployment
 
 - The website is deployed so you can easily access it through this link: [Formula One Explorer](https://formula-one-explorer.netlify.app/).
 
