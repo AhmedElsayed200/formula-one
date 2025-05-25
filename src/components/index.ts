@@ -6,4 +6,5 @@ export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as ErrorMessage } from './ErrorMessage';
 export { default as FastestLapChart } from './Charts/FastestLapChart';
 export { default as PointsChart } from './Charts/PointsChart';
-export { default as TotalRaceTimeChart } from './Charts/TotalRaceTimeChart'; 
+export { default as TotalRaceTimeChart } from './Charts/TotalRaceTimeChart';
+export { default as HeartButton } from './HeartButton'; 
