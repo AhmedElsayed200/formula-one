@@ -28,7 +28,8 @@ const Seasons: React.FC = () => {
       />
       {loading && <LoadingSpinner message="Loading..." />}
       {error && <ErrorMessage message={error} />}
-      {!loading && !error && (
+      {!loading && !error && seasons.length === 0 && <ErrorMessage message="No seasons found" />}
+      {!loading && !error && seasons.length > 0 && (
         <>
           {cardView ? (
             <CardView
