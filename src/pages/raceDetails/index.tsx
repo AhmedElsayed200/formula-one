@@ -4,16 +4,9 @@ import { useParams } from 'react-router-dom';
 import { PAGE_LIMIT, API_URL } from '../../constants';
 import type { Players } from '../../types/index.ts';
 import PlayerImage from '../../assets/images/player.jpg';
-import Pagination from '../../components/Pagination.tsx';
-import CardView from '../../components/CardView';
-import Header from '../../components/Header';
-import FastestLapChart from '../../components/Charts/FastestLapChart';
-import PointsChart from '../../components/Charts/PointsChart';
-import TotalRaceTimeChart from '../../components/Charts/TotalRaceTimeChart';
+import { Pagination, CardView, Header, FastestLapChart, PointsChart, TotalRaceTimeChart, LoadingSpinner, ErrorMessage } from '../../components';
 import PlayerCard from './PlayerCard';
 import useFetch from '../../hooks/useFetch';
-import LoadingSpinner from '../../components/LoadingSpinner';
-import ErrorMessage from '../../components/ErrorMessage';
 
 const RaceDetails: React.FC = () => {
   const { seasonId, roundId } = useParams<{ seasonId: string; roundId: string }>();

@@ -4,13 +4,8 @@ import type { Race } from '../../types/index.ts';
 import CarImage from '../../assets/images/car.jpg';
 import { API_URL, PAGE_LIMIT } from '../../constants';
 import { formatDate } from '../../utils/helpers';
-import Pagination from '../../components/Pagination.tsx';
-import CardView from '../../components/CardView';
-import ListView from '../../components/ListView';
-import Header from '../../components/Header';
+import { Pagination, CardView, ListView, Header, LoadingSpinner, ErrorMessage } from '../../components';
 import useFetch from '../../hooks/useFetch';
-import LoadingSpinner from '../../components/LoadingSpinner';
-import ErrorMessage from '../../components/ErrorMessage';
 
 const Races: React.FC = () => {
   const { id: season } = useParams<{ id: string }>();

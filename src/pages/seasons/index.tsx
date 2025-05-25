@@ -4,13 +4,8 @@ import CarImage from '../../assets/images/car.jpg';
 import { API_URL, PAGE_LIMIT } from '../../constants';
 import type { Season } from '../../types/index.ts';
 import { formatWikipediaUrl } from '../../utils/helpers';
-import Pagination from '../../components/Pagination.tsx';
-import CardView from '../../components/CardView';
-import ListView from '../../components/ListView';
-import Header from '../../components/Header';
+import { Pagination, CardView, ListView, Header, LoadingSpinner, ErrorMessage } from '../../components';
 import useFetch from '../../hooks/useFetch';
-import LoadingSpinner from '../../components/LoadingSpinner';
-import ErrorMessage from '../../components/ErrorMessage';
 
 const Seasons: React.FC = () => {
   const [page, setPage] = useState<number>(1);
